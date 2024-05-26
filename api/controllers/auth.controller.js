@@ -14,7 +14,7 @@ export const signup = async(req, res,next) => {
         res.json(
             {message: err.message, success: false, statusCode: err.statusCode || 500}
         );
-        next(errorHandler(err.statusCode,err.message,res ));
+        next(errorHandler(err.statusCode, err.message, res));
     }
 }
 
@@ -27,7 +27,7 @@ export const signin = async (req, res,next) => {
         }
         const validPassword = await bcrypt.compare(password, validuser.password);
         if(!validPassword) {
-            return next(errorHandler(400,"Invalid Password",res));
+            return next(errorHandler(200,"Invalid Password",res));
         }
         const token = jwt.sign({ id: validuser._id }, process.env.SECRET_KEY, { expiresIn: "1h" });
         const {password: pass, ...rest} = validuser._doc;

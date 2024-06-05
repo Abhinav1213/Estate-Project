@@ -1,36 +1,38 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux';
 import { Link,useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/UserSlice';
+import { useSelector } from 'react-redux';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+
+  const { loading=false, error } = useSelector((state) =>  state.user);
   const navigate = useNavigate();
 
   const handleChange = (e) => { 
     setFormData({...formData,[e.target.id]:e.target.value});
   }
+  const dispatch = useDispatch();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    dispatch(signInStart());
     console.log(formData);
     axios.post('/api/auth/signin', formData)
       .then((res) => {
         if (res.data.success === false) { 
           console.log(res.data.message);
-          setError(res.data.message);
-          setLoading(false);
+          dispatch(signInFailure(res.data.message));
           return;
         }
         console.log(res.data);
-        setError(null);
-        setLoading(false);
+        dispatch(signInSuccess(res.data));
         navigate('/');
     }).catch((err) => { 
-      console.log(err);
-      setError(err.message);
-      setLoading(false);
+      console.log(err.message);
+      dispatch(signInFailure(err.message));
     })
     
   }

@@ -4,6 +4,8 @@ import { Link,useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/UserSlice';
 import { useSelector } from 'react-redux';
+import OAuth from '../components/OAuth'
+
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
@@ -73,7 +75,8 @@ const SignIn = () => {
           >
             {loading && <i className="fas fa-spinner fa-spin"></i>}
             Login
-          </button>
+            </button>
+            <OAuth />
         </form>
         <p className="mt-4 text-center text-gray-600">
           Don't have an account? <Link to="/signup" className=' text-blue-600'>Sign Up</Link>

@@ -1,42 +1,42 @@
-import React,{useState} from 'react'
-import { Link,useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-
+import OAuth from '../components/OAuth'
 
 
 const SignUp = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
-  const handleSubmit = async (e) => { 
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     axios.post('/api/auth/signup', formData)
-    .then((res) => {
-      console.log(res.data.success);
-      if (res.data.success===false) { 
-        setError(res.data.message);
+      .then((res) => {
+        console.log(res.data.success);
+        if (res.data.success === false) {
+          setError(res.data.message);
+          setLoading(false);
+          return;
+        }
+        else {
+          setError(null);
+          setLoading(false);
+          navigate('/signin');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setError(err.message);
         setLoading(false);
         return;
-      }
-      else {
-        setError(null);
-        setLoading(false);
-        navigate('/signin');
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      setError(err.message);
-      setLoading(false);
-      return;
-    });
-    
+      });
+
   };
   return (
     <>
@@ -80,26 +80,27 @@ const SignUp = () => {
                 onChange={handleChange}
               />
             </div>
-            <  button 
+            <  button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
             >
               {loading && <i className="fas fa-spinner fa-spin"></i>}
               Sign Up
             </button>
+            <OAuth />
           </form>
           <p className="mt-4 text-center text-gray-600">
             Already have an account? <Link to="/signin" className=' text-blue-600'>Login</Link>
           </p>
           {error && <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
             <p>{error}</p>
-          
+
           </div>
           }
         </div>
       </div>
-        <div>
-        </div>
+      <div>
+      </div>
     </>
   )
 }
